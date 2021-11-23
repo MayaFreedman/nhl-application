@@ -225,6 +225,7 @@ export default {
         },
         body: JSON.stringify(team)
       })
+      const data = await res.json()
       console.log("theres no way this works lmao good luck")
     }
   },
