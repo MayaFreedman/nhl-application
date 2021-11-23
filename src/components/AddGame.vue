@@ -79,7 +79,7 @@
         <button
           type="button"
           class="btn btn-dark mx-3 mt-1 mb-3"
-          onclick="newGame();"
+          v-on:click="newGame"
         >
           Submit
         </button>
@@ -90,89 +90,148 @@
 
 <script>
 export default {
-    methods : {
-        //Attempts to add a new game to the data
- newGame() {
-    let hTeamName = document.querySelector('#homeTeamName').value;
-    let aTeamName = document.querySelector('#awayTeamName').value;
-    let hScore = document.querySelector('#homeScore').value;
-    let aScore = document.querySelector('#awayScore').value;
-    let date = document.querySelector('#date').value;
-    let OT = document.querySelector('#OT').checked;
-    let SO = document.querySelector('#SO').checked;
-    let status;
+  data() {
+    return {
+      allTeams: Array
+    }
+  },
+  methods: {
+    //Attempts to add a new game to the data
+    newGame() {
+      let hTeamName = document.querySelector("#homeTeamName").value;
+      let aTeamName = document.querySelector("#awayTeamName").value;
+      let hScore = document.querySelector("#homeScore").value;
+      let aScore = document.querySelector("#awayScore").value;
+      let date = document.querySelector("#date").value;
+      let OT = document.querySelector("#OT").checked;
+      let SO = document.querySelector("#SO").checked;
+      let status;
 
-    if (OT === true) status = "F/OT";
-    else if (SO === true) status = "F/SO"
-    else status = "final";
+      if (OT === true) status = "F/OT";
+      else if (SO === true) status = "F/SO";
+      else status = "final";
 
+      let error = document.querySelector(".errorMsg");
+      if (error != null) error.remove();
 
-    let error = document.querySelector('.errorMsg');
-    if (error != null) error.remove();
+      let container = document.querySelector("#addGame");
+      let row1 = document.querySelector("#row1");
 
-    let container = document.querySelector('#addGame');
-    let row1 = document.querySelector('#row1');
-
-    let homeTeam;
-    teams.forEach(team => {
+      let homeTeam;
+      this.allTeams.forEach((team) => {
         if (team.Name === hTeamName) homeTeam = team;
-    });
+      });
 
-    let awayTeam
-    teams.forEach(team => {
+      let awayTeam;
+      this.allTeams.forEach((team) => {
         if (team.Name === aTeamName) awayTeam = team;
-    });
+      });
 
-    let today = new Date();
-    // Displays an error message if: 
-    //a field is left empty
-    if (hTeamName === '' || aTeamName === '' || hScore === '' || aScore === '' || date === '' || OT === '') {
-        let enterAllFields = createErrorMsg('Error: Please Fill Out All Required Fields');
+      let today = new Date();
+      // Displays an error message if:
+      //a field is left empty
+      if (
+        hTeamName === "" ||
+        aTeamName === "" ||
+        hScore === "" ||
+        aScore === "" ||
+        date === "" ||
+        OT === ""
+      ) {
+        let enterAllFields = this.createErrorMsg(
+          "Error: Please Fill Out All Required Fields"
+        );
         container.insertBefore(enterAllFields, row1);
-    }
-    //a valid team is not imputed 
-    else if (homeTeam === undefined || awayTeam === undefined) {
-        container.insertBefore(createErrorMsg('Error: Team Not Found'), row1);
-    }
-    //a valid date is not imputed 
-    else if (isNaN(Date.parse(date)) || Date.parse(today) < Date.parse(date) || date.length != 10) {
-        container.insertBefore(createErrorMsg('Error: Enter a Valid Date'), row1);
-    }
-    //a tie is imputed as the score
-    else if (aScore === hScore) {
-        container.insertBefore(createErrorMsg('Error: Invalid Score Input'), row1);
-    }
-    //Creates a new game
-    else {
+      }
+      //a valid team is not imputed
+      else if (homeTeam === undefined || awayTeam === undefined) {
+        container.insertBefore(this.createErrorMsg("Error: Team Not Found"), row1);
+      }
+      //a valid date is not imputed
+      else if (
+        isNaN(Date.parse(date)) ||
+        Date.parse(today) < Date.parse(date) ||
+        date.length != 10
+      ) {
+        container.insertBefore(
+          this.createErrorMsg("Error: Enter a Valid Date"),
+          row1
+        );
+      }
+      //a tie is imputed as the score
+      else if (aScore === hScore) {
+        container.insertBefore(
+          this.createErrorMsg("Error: Invalid Score Input"),
+          row1
+        );
+      }
+      //Creates a new game
+      else {
         //Updates overall stats for the teams
         if (hScore > aScore) {
-            homeTeam.Wins += 1;
-            awayTeam.Losses += 1;
+          this.update(true, homeTeam)
+          this.update(false, awayTeam)
         } else {
-            awayTeam.Wins += 1;
-            homeTeam.Losses += 1;
+          this.update(true, awayTeam)
+          this.update(false, homeTeam)
         }
         let game = {
-            HomeTeam: homeTeam.Key,
-            AwayTeam: awayTeam.Key,
-            AwayTeamScore: aScore,
-            HomeTeamScore: hScore,
-            Day: date,
-            Status: status
-        }
-        allGames.push(game);
-        sortGames();
-        storeData();
+          HomeTeam: homeTeam.Key,
+          AwayTeam: awayTeam.Key,
+          AwayTeamScore: aScore,
+          HomeTeamScore: hScore,
+          Day: date,
+          Status: status
+        };
+        this.push(game);
         //Emptys input
-        document.querySelector('#homeTeamName').value = '';
-        document.querySelector('#awayTeamName').value = '';
-        document.querySelector('#homeScore').value = '';
-        document.querySelector('#awayScore').value = '';
-        document.querySelector('#date').value = '';
-        document.querySelector('#OT').checked = false;
+        document.querySelector("#homeTeamName").value = "";
+        document.querySelector("#awayTeamName").value = "";
+        document.querySelector("#homeScore").value = "";
+        document.querySelector("#awayScore").value = "";
+        document.querySelector("#date").value = "";
+        document.querySelector("#OT").checked = false;
+      }
+    },
+    createErrorMsg(msg) {
+      let enterAllFields = document.createElement("h4");
+      enterAllFields.appendChild(document.createTextNode(msg));
+      enterAllFields.className = "text-danger errorMsg pt-3 pl-2";
+      return enterAllFields;
+    },
+      async push(game) {
+        console.log("OVER HERE!!!!!!!!!!!")
+      const res = await fetch("http://localhost:5000/games", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(game),
+
+      });
+
+      const data = await res.json();
+      console.log(data);
+    },
+    async update(won, team){
+      console.log(team)
+      console.log(team.Losses)
+      if(won) team.Wins += 1
+      else team.Losses += 1
+      const res = await fetch(`http://localhost:5000/teams/${team.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify(team)
+      })
+      console.log("theres no way this works lmao good luck")
     }
-}
-    }
+  },
+  async mounted() {
+    this.allTeams = await (await fetch("http://localhost:5000/teams")).json();
+    console.log(this.allTeams);
+  },
 };
 </script>
 

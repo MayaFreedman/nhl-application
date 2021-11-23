@@ -118,7 +118,7 @@ export default {
     },
     //Gets teams data from JSON server
     async fetchTeams() {
-      const res = await fetch("http://localhost:3000/teams");
+      const res = await fetch("http://localhost:5000/teams");
 
       const data = await res.json();
       return data;
@@ -131,7 +131,7 @@ export default {
       return enterAllFields;
     },
     async push(team) {
-      const res = await fetch("http://localhost:3000/teams", {
+      const res = await fetch("http://localhost:5000/teams", {
         method: "POST",
         headers: {
           "Content-type": "application/json",

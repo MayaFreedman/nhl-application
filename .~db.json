@@ -794,7 +794,7 @@
     {
       "Name": "Grant",
       "Wins": 0,
-      "Losses": 0,
+      "Losses": 1,
       "Division": "Metropolitan",
       "Key": "Gra",
       "id": 44
@@ -34753,6 +34753,15 @@
       "Day": "2021-01-18",
       "Status": "F/OT",
       "id": 19
+    },
+    {
+      "HomeTeam": "Gra",
+      "AwayTeam": "Ant",
+      "AwayTeamScore": "5",
+      "HomeTeamScore": "0",
+      "Day": "2021-01-18",
+      "Status": "F/OT",
+      "id": 20
     }
   ]
 }

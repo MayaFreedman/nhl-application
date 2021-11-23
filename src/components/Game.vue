@@ -6,7 +6,7 @@
     crossorigin="anonymous"
   />
   <div>
-    <h3
+    <h3 v-if="prevDateText != date.innerHTML"
       class="
         border border-left-0 border-right-0 border-top-0 border-secondary
         py-3
@@ -85,7 +85,7 @@ export default {
       homeTeam: Object,
       awayTeam: Object,
       date: String,
-      prevDateText: HTMLElement
+      prevDateText: String
     };
   },
   props: {
@@ -107,10 +107,15 @@ export default {
     }
   },
   async mounted() {
-    this.allTeams = await (await fetch("http://localhost:3000/teams")).json();
+    this.allTeams = await (await fetch("http://localhost:5000/teams")).json();
     this.homeTeam = this.getTeam(this.game.HomeTeam)
     this.awayTeam = this.getTeam(this.game.AwayTeam)
+    let prevDate = document.querySelector('.date:last-of-type')
+    this.prevDateText = prevDate != null ? prevDate.innerHTML : '';
+    console.log(this.prevDateText)
     this.formatDate()
+  }, created(){
+      //console.log(prevDate)
   }
 };
 </script>
