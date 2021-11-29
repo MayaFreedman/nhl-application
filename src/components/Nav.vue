@@ -1,4 +1,5 @@
 <template>
+<!-- Navbar -->
   <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3" id="nav">
     <div class="container">
       <button
@@ -12,7 +13,6 @@
 
       <div class="collapse navbar-collapse" id="navmenu">
         <ul class="navbar-nav">
-           <!-- <router-link to="/"><img src="@../images/LeagueLogo.png" alt="" class="img-fluid"/></router-link>-->
           <li class="nav-item active">
             <router-link class="nav-link" to="/add">Add</router-link>
           </li>
@@ -26,7 +26,6 @@
       </div>
     </div>
   </nav>
-
 
 </template>
 <style>
@@ -42,8 +41,4 @@
 #nav a.router-link-exact-active {
   color: white;
 }
-/*
-.nav-item{
-  margin-top:12px;
-}*/
 </style>

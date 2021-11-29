@@ -1,13 +1,22 @@
 <template>
+<div>
   <link
     rel="stylesheet"
     href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
     integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
     crossorigin="anonymous"
   />
+  <!--Title-->
+    <header id="main-header" class="py-4">
+      <div class="container">
+      <h1 id="header-title">Standings</h1>
+    </div>
+    </header>
+
   <section class="bg-light">
     <div class="container">
       <div id="main" class="card card-body">
+         <!--Filter Text Box-->
         <form class="form-inline mb-3 float-right">
           <input
             id="filter"
@@ -17,10 +26,11 @@
             v-on:keyup="filterTeams"
           />
         </form>
+        <!--Standings-->
         <table class="table table-bordered table-hover">
           <thead>
             <tr>
-              <th scope="col" v-on:click="sort('team')">Team</th>
+              <th scope="col" v-on:click="sort('team')" >Team</th>
               <th scope="col" v-on:click="sort('wins')">Wins</th>
               <th scope="col" v-on:click="sort('losses')">Losses</th>
               <th scope="col" v-on:click="sort('GP')">GP</th>
@@ -29,20 +39,22 @@
           </thead>
           <tbody>
             <tr :key="team.Name" v-for="team in teams">
-              <td class="team">{{ team.Name }}</td>
-              <td class="wins">{{ team.Wins }}</td>
-              <td class="losses">{{ team.Losses }}</td>
-              <td class="GP">{{ team.Wins + team.Losses }}</td>
-              <td class="division">{{ team.Division }}</td>
+              <td class = "team" :style="[currentSortField === 'team' ? 'background: #ececec' : 'background: #FFF']"><router-link v-on:click="setCurrentTeam(team.Key)" to="/games">{{ team.Name }}</router-link></td>
+              <td class = "wins" :style="[currentSortField === 'wins' ? 'background: #ececec' : 'background: #FFF']">{{ team.Wins }}</td>
+              <td class = "losses" :style="[currentSortField === 'losses' ? 'background: #ececec' : 'background: #FFF']">{{ team.Losses }}</td>
+              <td class = "GP" :style="[currentSortField === 'GP' ? 'background: #ececec' : 'background: #FFF']">{{ team.Wins + team.Losses }}</td>
+              <td class = "division" :style="[currentSortField === 'division' ? 'background: #ececec' : 'background: #FFF']">{{ team.Division }}</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
   </section>
+  </div>
 </template>
 
 <script>
+import axios from "axios"
 export default {
   data() {
     return {
@@ -53,12 +65,12 @@ export default {
     };
   },
   methods: {
-    //Gets teams data from JSON server
-    async fetchTeams() {
-      const res = await fetch("http://localhost:5000/teams");
-
-      const data = await res.json();
-      return data;
+    //Sets the current selected team 
+    async setCurrentTeam(teamKey){
+      await axios.patch(
+          `http://localhost:5000/currentTeam`,
+          {'selected': teamKey}
+        );
     },
     //Sorts the standings based off one of the column's field
     sort(field) {
@@ -75,7 +87,6 @@ export default {
           this.teams = this.allTeams.sort((a, b) =>
             a.Name.localeCompare(b.Name) > 0 ? 1 : -1
           );
-          console.log(this.allTeams);
         } else if (field === "wins") {
           this.teams = this.allTeams.sort((a, b) => a.Wins - b.Wins);
         } else if (field === "losses") {
@@ -94,7 +105,6 @@ export default {
           this.teams = this.allTeams.sort((a, b) =>
             a.Name.localeCompare(b.Name) < 0 ? 1 : -1
           );
-          console.log(this.allTeams);
         } else if (field === "wins") {
           this.teams = this.allTeams.sort((a, b) => b.Wins - a.Wins);
         } else if (field === "losses") {
@@ -109,30 +119,34 @@ export default {
           );
         }
       }
-      this.highlightSort();
-    },
-    //Highlights the column that standings is being sorted by
-    highlightSort() {
-      let remove = document.querySelectorAll("td");
-      remove.forEach((element) => (element.style = "background:#ffffff;"));
-      let add = document.querySelectorAll(`.${this.currentSortField}`);
-      add.forEach((element) => (element.style = "background:#ececec;"));
     },
     //Filters the teams based on input in text box
     filterTeams() {
-    this.currentSortField = 'teams'
-    let filterValue = document.querySelector('#filter').value;
+    this.currentSortField = 'team'
+    let filterValue = document.querySelector('#filter').value.toLowerCase();
     this.teams = this.allTeams.filter(team => (team.Name.toLowerCase().indexOf(filterValue) >= 0));
-    this.highlightSort();
-}
+    }
   },
   async mounted() {
-    this.allTeams = await this.fetchTeams();
+    // Gets allTeams from server
+    const teamsResp = await axios.get('http://localhost:5000/teams');
+    this.allTeams =  teamsResp.data;
     this.teams = this.allTeams;
-    console.log(this.teams);
-    console.log(this.sortDirection);
-    this.sort('wins')  
+    
+    //Sorts standings by wins 
+    this.currentSortField = 'wins';
+    this.sort('wins');
     }
-};
+}
 </script>
+<style scoped>
+/* Router Link Styling */
+a{
+  color: black;
+}
+
+a:hover{
+  color: black;
+}
+</style>
 

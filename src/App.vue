@@ -1,6 +1,10 @@
 <template>
   <Nav/>
-  <router-view :games="games"></router-view>
+  <router-view v-slot="{ Component }">
+    <transition name="fade" mode="out-in">
+      <component :is="Component"/>
+          </transition>
+  </router-view>
 </template>
 <script>
 import Nav from '@/components/Nav.vue'
@@ -9,28 +13,20 @@ import Nav from '@/components/Nav.vue'
     name:'App',
     components:{
     Nav
-    }, methods :{
-       //Gets teams data from JSON server
-    async fetchTeams() {
-      console.log("im urnning ")
-      const res = await fetch("http://localhost:5000/teams");
-
-      const data = await res.json();
-      return data;
-    }
     }
   }
 
 </script>
 
 <style>
-/*
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}*/
+/* Transitions */
+.fade-enter-from,
+.fade-leave-to {
+opacity:0;
+}
 
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease-out;
+}
 </style>
