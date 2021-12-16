@@ -1,6 +1,6 @@
 {
   "currentTeam": {
-    "selected": "Sno"
+    "selected": "all"
   },
   "teams": [
     {
@@ -563,7 +563,7 @@
       "Name": "Oilers",
       "Conference": "Western",
       "Division": "Pacific",
-      "Wins": 35,
+      "Wins": 36,
       "Losses": 19,
       "OvertimeLosses": 2,
       "Percentage": 0.625,
@@ -729,7 +729,7 @@
     {
       "Name": "Booga",
       "Wins": 0,
-      "Losses": 6,
+      "Losses": 7,
       "Division": "Pacific",
       "Key": "Boo",
       "id": 36
@@ -34634,6 +34634,15 @@
       "Day": "2021-11-22",
       "Status": "Final",
       "id": 17130
+    },
+    {
+      "HomeTeam": "Boo",
+      "AwayTeam": "EDM",
+      "AwayTeamScore": "21",
+      "HomeTeamScore": "1",
+      "Day": "2021-12-07",
+      "Status": "Final",
+      "id": 17131
     }
   ]
 }
